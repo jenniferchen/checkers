@@ -5,7 +5,7 @@ end
 
 class Piece
   
-  attr_accessor :pos, :color
+  attr_accessor :pos, :color, :is_king
 
   def initialize(board, pos, color, is_king = false)
     @board = board
@@ -15,7 +15,6 @@ class Piece
   end
   
   def perform_moves(moves)
-    # valid_move_seq?(moves) ? perform_moves!(moves) : raise InvalidMoveError.new
     if valid_move_seq?(moves)
       perform_moves!(moves)
     else

@@ -4,14 +4,8 @@ class Board
   
   attr_accessor :rows
   
-  def initialize
-    create_board
-  end
-  
-  def self.setup_board
-    rows = Board.new
-    rows.populate_board
-    rows
+  def initialize(populate = true)
+    create_board(populate)
   end
   
   def [](pos)
@@ -59,19 +53,29 @@ class Board
   end
   
   def dup
-    #stopped here!
+    new_board = Board.new(false)
     (0..7).each do |row|
       (0..7).each do |col|
-        
+        pos = [row, col]
+        piece = self[pos]
+        next if piece.nil?
+        new_piece = Piece.new(new_board, pos, piece.color, piece.is_king)
+        new_board[[row, col]] = new_piece
+      end
+    end
+    new_board
   end
   
   private
   
-  def create_board
+  def create_board(populate)
     @rows = Array.new(8) { Array.new(8) }
-    populate_rows((0..2), :white)
-    populate_rows((5..7), :red)
-    self[[3,2]] = Piece.new(self, [3,2], :red)
+    if populate
+      populate_rows((0..2), :white)
+      populate_rows((5..7), :red)
+      self[[3,2]] = Piece.new(self, [3,2], :red)
+    end
+    self
   end
   
   def populate_rows(rows, color)
