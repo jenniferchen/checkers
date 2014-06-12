@@ -63,8 +63,8 @@ class Piece
     return false unless @board.valid_pos?(new_pos)
     dx = new_pos[0] - @pos[0]
     dy = new_pos[1] - @pos[1]
-    if move_diffs.include?([dx, dy])
-      @board.move(@pos, new_pos) if @board.empty?(new_pos)
+    if move_diffs.include?([dx, dy]) && @board.empty?(new_pos)
+      @board.move(@pos, new_pos)
       true
     else
       false

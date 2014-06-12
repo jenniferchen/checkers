@@ -24,9 +24,12 @@ class Game
     begin
       puts "#{color}: choose moves (i.e. B3 C4 D5)"
       input = gets.chomp.split(" ")
+      unless valid_input(input)
+        raise InvalidMoveError.new
+      end
       moves = translate(input)
       start_pos = moves.shift
-      if @board.piece_color(start_pos) != color
+      if @board[start_pos].nil? || @board.piece_color(start_pos) != color
         raise InvalidMoveError.new
       end
       @board[start_pos].perform_moves(moves)
@@ -57,6 +60,10 @@ class Game
       moves << [Board::ROWS[row], Board::COLUMNS[col.upcase]]
     end
     moves
+  end
+  
+  def valid_input(input)
+    input.all? { |coord| coord.match(/[A-z][0-8]/) }
   end
   
 end
