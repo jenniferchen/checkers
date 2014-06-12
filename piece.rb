@@ -1,5 +1,8 @@
 require_relative 'board'
 
+class InvalidMoveError < StandardError
+end
+
 class Piece
   
   attr_accessor :pos, :color
@@ -10,6 +13,39 @@ class Piece
     @color = color
     @is_king = is_king
   end
+  
+  def perform_moves(moves)
+    # valid_move_seq?(moves) ? perform_moves!(moves) : raise InvalidMoveError.new
+    if valid_move_seq?(moves)
+      perform_moves!(moves)
+    else
+      raise InvalidMoveError.new
+    end
+  end
+  
+  def valid_move_seq?(moves)
+    dup_board = @board.dup
+    begin
+      dup_board[@pos].perform_moves!(moves)
+    rescue InvalidMoveError
+      false
+    else
+      true
+    end
+  end
+  
+  def perform_moves!(moves)
+    if moves.length > 1
+      moves.each do |new_pos| 
+        raise InvalidMoveError.new unless perform_jump(new_pos) 
+      end
+    else
+      move = moves.first
+      raise InvalidMoveError.new unless perform_slide(move) || perform_jump(move)
+    end
+  end
+  
+  private
   
   def perform_slide(new_pos)
     return false unless @board.valid_pos?(new_pos)
@@ -23,47 +59,17 @@ class Piece
     end
   end
       
-  # def perform_slide(new_pos)
-  #   possible_moves = []
-  #   move_diffs.each do |diff|
-  #     dx, dy = diff
-  #     possible_moves = [@pos[0] + dx, @pos[1] + dy]
-  #   end
-  #   if possible_moves.include?(new_pos) 
-  #     perform_moves!(new_pos) if @board.valid_pos?(new_pos) && @board.empty?(new_pos)
-  #     true
-  #   else
-  #     false
-  #   end
-  # end
-  
   def perform_jump(new_pos)
     return false unless @board.valid_pos?(new_pos)
     dx = new_pos[0] - @pos[0]
     dy = new_pos[1] - @pos[1]
     jumped_pos = [@pos[0] + dx / 2, @pos[1] + dy / 2]
-    
     if double(move_diffs).include?([dx, dy]) && enemy?(jumped_pos)
       @board.move(@pos, new_pos)
       @board.remove(jumped_pos)
       true
     else
       false
-    end
-  end
-  
-  # need to revisit
-  def valid_move_seq?(moves)
-    dup_board = @board.dup
-    if dup_board[@pos].perform_moves!(moves)
-      @board = dup_board
-    else
-    end
-  end
-  
-  def perform_moves!(moves)
-    moves.each do |new_pos|
-      @board.move(@pos, new_pos)
     end
   end
   

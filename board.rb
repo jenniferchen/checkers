@@ -58,6 +58,13 @@ class Board
     print a
   end
   
+  def dup
+    #stopped here!
+    (0..7).each do |row|
+      (0..7).each do |col|
+        
+  end
+  
   private
   
   def create_board
