@@ -1,4 +1,7 @@
+# encoding: utf-8
+
 require_relative 'piece'
+require 'colorize'
 
 class Board
   
@@ -39,17 +42,28 @@ class Board
     self[pos].color
   end
   
+  def no_pieces(color)
+    @rows.each do |row|
+      return false if row.any? { |piece| !piece.nil? && piece.color == color}
+    end
+    true
+  end
+  
   def render
-    a = @rows.map do |row|
-      row.map do |el|
-        if el.nil?
-          " "
+    (0..7).each do |row|
+      (0..7).each do |col|
+        bg_color = ((row + col) % 2 == 0 ? :light_white : :light_black)
+        piece = @rows[row][col]
+        if piece.nil?
+          print "    ".colorize(:background => bg_color)
         else
-          el.color == :white ? "W" : "R"
+          sym = (piece.is_king ? " ◎  " : " ◉  ")
+          print sym.colorize(:color => piece.color, :background => bg_color)
         end
-      end.join "  "
-    end.join "\n"
-    print a
+      end
+      puts
+    end
+    nil
   end
   
   def dup
@@ -73,7 +87,6 @@ class Board
     if populate
       populate_rows((0..2), :white)
       populate_rows((5..7), :red)
-      self[[3,2]] = Piece.new(self, [3,2], :red)
     end
     self
   end

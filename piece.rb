@@ -1,4 +1,7 @@
+# encoding: utf-8
+
 require_relative 'board'
+require 'colorize'
 
 class InvalidMoveError < StandardError
 end
@@ -17,9 +20,14 @@ class Piece
   def perform_moves(moves)
     if valid_move_seq?(moves)
       perform_moves!(moves)
+      maybe_promote
     else
       raise InvalidMoveError.new
     end
+  end
+  
+  def maybe_promote
+    @is_king = true if [0,7].include?(@pos.first)
   end
   
   def valid_move_seq?(moves)
@@ -43,8 +51,6 @@ class Piece
       raise InvalidMoveError.new unless perform_slide(move) || perform_jump(move)
     end
   end
-  
-  private
   
   def perform_slide(new_pos)
     return false unless @board.valid_pos?(new_pos)
