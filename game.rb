@@ -20,9 +20,9 @@ class Game
   
   def turn(color)
     begin
-      puts "#{color}: choose moves (i.e. 23 34 45)"
+      puts "#{color}: choose moves (i.e. B3 C4 D5)"
       input = gets.chomp.split(" ")
-      moves = input.map {|coord| coord.split("").map(&:to_i) }
+      moves = translate(input)
       start_pos = moves.shift
       if @board.piece_color(start_pos) != color
         raise InvalidMoveError.new
@@ -40,6 +40,15 @@ class Game
   
   def winner
     @board.no_pieces(:red) ? :white : :red
+  end
+  
+  def translate(input)
+    moves = []
+    input.each do |coord|
+      col, row = coord.split("")
+      moves << [Board::ROWS[row], Board::COLUMNS[col.upcase]]
+    end
+    moves
   end
   
 end

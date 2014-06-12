@@ -51,6 +51,7 @@ class Board
   
   def render
     (0..7).each do |row|
+      print "#{ROWS.key(row)} "
       (0..7).each do |col|
         bg_color = ((row + col) % 2 == 0 ? :light_white : :light_black)
         piece = @rows[row][col]
@@ -63,7 +64,16 @@ class Board
       end
       puts
     end
+    render_col_label
     nil
+  end
+  
+  def render_col_label
+    print "   "
+    (0..7).each do |col|
+      print " #{COLUMNS.key(col)}  "
+    end
+    puts
   end
   
   def dup
@@ -79,6 +89,29 @@ class Board
     end
     new_board
   end
+  
+  COLUMNS = {
+    "A" => 0,
+    "B" => 1,
+    "C" => 2,
+    "D" => 3,
+    "E" => 4,
+    "F" => 5,
+    "G" => 6,
+    "H" => 7
+  }
+  
+  ROWS = {
+    "8" => 0,
+    "7" => 1,
+    "6" => 2,
+    "5" => 3,
+    "4" => 4,
+    "3" => 5,
+    "2" => 6,
+    "1" => 7
+  }
+  
   
   private
   
