@@ -11,12 +11,14 @@ class Game
   def play
     curr_color = :red
     until game_over?
-      puts @board.render
+      @board.render
       turn(curr_color)
       curr_color = (curr_color == :red ? :white : :red)
     end
-    puts "Game over, #{winner} won."
+    puts "Game over, #{@winner} won."
   end
+  
+  private
   
   def turn(color)
     begin
@@ -35,11 +37,17 @@ class Game
   end
   
   def game_over?
-    @board.no_pieces(:red) || @board.no_pieces(:white)
+    if @board.pieces(:red).empty? || @board.no_moves(:red)
+      @winner = :white
+    elsif @board.pieces(:white).empty? || @board.no_moves(:white)
+      @winner = :red
+    else
+      false
+    end
   end
   
   def winner
-    @board.no_pieces(:red) ? :white : :red
+    @board.pieces.empty?(:red) ? :white : :red
   end
   
   def translate(input)

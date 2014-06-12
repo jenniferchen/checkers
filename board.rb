@@ -5,7 +5,7 @@ require 'colorize'
 
 class Board
   
-  attr_accessor :rows
+  attr_reader :rows
   
   def initialize(populate = true)
     create_board(populate)
@@ -42,11 +42,12 @@ class Board
     self[pos].color
   end
   
-  def no_pieces(color)
-    @rows.each do |row|
-      return false if row.any? { |piece| !piece.nil? && piece.color == color}
-    end
-    true
+  def pieces(color)
+    @rows.flatten.compact.select { |piece| piece.color == color}
+  end
+  
+  def no_moves(color)
+    !pieces(color).any? { |piece| piece.has_moves }
   end
   
   def render
@@ -70,9 +71,7 @@ class Board
   
   def render_col_label
     print "   "
-    (0..7).each do |col|
-      print " #{COLUMNS.key(col)}  "
-    end
+    (0..7).each { |col| print " #{COLUMNS.key(col)}  " }
     puts
   end
   
@@ -89,6 +88,8 @@ class Board
     end
     new_board
   end
+  
+  private
   
   COLUMNS = {
     "A" => 0,
@@ -111,9 +112,6 @@ class Board
     "2" => 6,
     "1" => 7
   }
-  
-  
-  private
   
   def create_board(populate)
     @rows = Array.new(8) { Array.new(8) }

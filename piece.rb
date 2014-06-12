@@ -1,14 +1,13 @@
 # encoding: utf-8
 
 require_relative 'board'
+require_relative 'invalid_move_error'
 require 'colorize'
-
-class InvalidMoveError < StandardError
-end
 
 class Piece
   
-  attr_accessor :pos, :color, :is_king
+  attr_accessor :pos
+  attr_reader :color, :is_king
 
   def initialize(board, pos, color, is_king = false)
     @board = board
@@ -52,6 +51,14 @@ class Piece
     end
   end
   
+  def has_moves
+    move_diffs.any? do |diff|
+      valid_move_seq?([[@pos[0] + diff[0], @pos[1] + diff[1]]])
+    end
+  end
+  
+  private
+  
   def perform_slide(new_pos)
     return false unless @board.valid_pos?(new_pos)
     dx = new_pos[0] - @pos[0]
@@ -82,17 +89,17 @@ class Piece
     !@board.empty?(pos) && @board.piece_color(pos) != @color
   end
   
+  def double(steps)
+    steps.map do |step|
+      step.map { |coord| coord * 2 }
+    end
+  end
+  
   def move_diffs
     if @is_king
       WHITE_STEP + RED_STEP
     else
       @color == :white ? WHITE_STEP : RED_STEP
-    end
-  end
-  
-  def double(steps)
-    steps.map do |step|
-      step.map { |coord| coord * 2 }
     end
   end
   
