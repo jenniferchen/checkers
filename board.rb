@@ -57,9 +57,9 @@ class Board
         bg_color = ((row + col) % 2 == 0 ? :light_white : :light_black)
         piece = @rows[row][col]
         if piece.nil?
-          print "    ".colorize(:background => bg_color)
+          print "   ".colorize(:background => bg_color)
         else
-          sym = (piece.is_king ? " ◎  " : " ◉  ")
+          sym = (piece.is_king ? " ◎ " : " ◉ ")
           print sym.colorize(:color => piece.color, :background => bg_color)
         end
       end
