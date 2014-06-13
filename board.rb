@@ -70,7 +70,7 @@ class Board
   end
   
   def render_col_label
-    print "   "
+    print "  "
     (0..7).each { |col| print " #{COLUMNS.key(col)} " }
     puts
   end
