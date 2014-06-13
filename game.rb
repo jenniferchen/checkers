@@ -22,7 +22,7 @@ class Game
   
   def turn(color)
     begin
-      puts "#{color}: choose moves (i.e. B3 C4 D5)"
+      puts "#{color}: choose moves (i.e. C3 D4 E5)"
       input = gets.chomp.split(" ")
       unless valid_input(input)
         raise InvalidMoveError.new
