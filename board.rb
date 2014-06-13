@@ -71,7 +71,7 @@ class Board
   
   def render_col_label
     print "   "
-    (0..7).each { |col| print " #{COLUMNS.key(col)}  " }
+    (0..7).each { |col| print " #{COLUMNS.key(col)} " }
     puts
   end
   
